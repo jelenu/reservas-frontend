@@ -1,7 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import './authStyle.css'
+import { UserContext } from '../../context/userContext'
+import { useNavigate } from 'react-router-dom';
+
+
 
 function Login() {
+  
+  const navigate = useNavigate();
+  const { setIsAutenticated } = useContext(UserContext);
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -10,6 +18,7 @@ function Login() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +31,12 @@ function Login() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      console.log('Respuesta de la API:', data);
+      localStorage.setItem('authtoken', data.key);
+      setIsAutenticated(true);
+
+      navigate('/');
+
+
     } catch (error) {
       console.error('Error al llamar a la API:', error);
     }

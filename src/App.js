@@ -1,39 +1,63 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Routes,Route } from 'react-router-dom'
 
+import { Header } from './components/layout/Header'
+import { UserContext } from './context/userContext'
 import Login from './components/auth/Login'
 import SignUp from './components/auth/Singup'
+import { VehiclesList } from './components/vehicles/VehiclesList';
+import { BookingFilter } from './components/booking/BookingFilter';
+
+
 
 function App() {
+  let [ isAutenticated, setIsAutenticated] = useState(false);
+  let [ authToken, setAuthToken] = useState("");
+  let [ userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const storedAuthToken = localStorage.getItem('authtoken');
+
+    if (storedAuthToken) {
+      setAuthToken(storedAuthToken);
+      console.log(storedAuthToken)
+
+      fetch('http://localhost:8000/api/authentication/user/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${storedAuthToken}`
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          setUserName(data.username);
+          console.log(data.username)
+        })
+        .catch(error => {
+          console.error('Error al llamar a la API:', error);
+        });
+
+    }
+  }, [isAutenticated]);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/sign-in" element={<Login />} />
-        <Route path="/sign-up" element={<SignUp />} />
-      </Routes>
-      <div className="App">
-        <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-          <div className="container">
-            
-            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-              <ul className="navbar-nav ml-auto">
-                <li className="nav-item">
-                  <Link className="nav-link" to={'/sign-in'}> Login </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to={'/sign-up'}> Sign up</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-
-
+    <UserContext.Provider value={{ isAutenticated, setIsAutenticated, authToken, setAuthToken, userName, setUserName }}>
+      <div>
+        <Header />
+        <Routes>
+          <Route path="/" element={<BookingFilter />} />
+          <Route path="/vehicles" element={<VehiclesList />} />
+          <Route path="/sign-in" element={<Login />} />
+          <Route path="/sign-up" element={<SignUp />} />
+        </Routes>
       </div>
-    </Router>
+    </UserContext.Provider>
+    
+    
+
   )
 }
 

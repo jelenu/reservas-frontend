@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './authStyle.css';
+import { UserContext } from '../../context/userContext'
+import { useNavigate } from 'react-router-dom';
+
 
 function Signup() {
+  const navigate = useNavigate();
+
+  const { setIsAutenticated } = useContext(UserContext);
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -12,6 +19,7 @@ function Signup() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +50,9 @@ function Signup() {
       console.log('Respuesta de la API (Login):', dataLogin);
 
       localStorage.setItem('authtoken', dataLogin.key);
+      setIsAutenticated(true);
+
+      navigate('/');
 
 
     } catch (error) {
