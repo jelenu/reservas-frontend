@@ -5,8 +5,6 @@ import { Routes,Route } from 'react-router-dom'
 
 import { Header } from './components/layout/Header'
 import { UserContext } from './context/userContext'
-import Login from './components/auth/Login'
-import SignUp from './components/auth/Singup'
 import { VehiclesList } from './components/vehicles/VehiclesList';
 import { BookingFilter } from './components/booking/BookingFilter';
 
@@ -50,8 +48,6 @@ function App() {
         <Routes>
           <Route path="/" element={<BookingFilter />} />
           <Route path="/vehicles" element={<VehiclesList />} />
-          <Route path="/sign-in" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </div>
     </UserContext.Provider>

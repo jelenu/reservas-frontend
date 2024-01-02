@@ -17,6 +17,9 @@ export const BookingFilter = () => {
     pickupOfficeId: null,
     pickupDate: null,
   });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [searchKey, setSearchKey] = useState(0);
+
   
   // ...
   
@@ -76,7 +79,6 @@ export const BookingFilter = () => {
     onChange: handleChange(name),
   });
 
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Función para manejar el envío del formulario
   const handleSubmit = (event) => {
@@ -94,8 +96,8 @@ export const BookingFilter = () => {
       pickupOfficeId: offices.find((office) => office.name === formData.pickupOffice)?.id || null,
     });
     setCalendarVisible(false);
-
     setFormSubmitted(true);
+    setSearchKey((prevKey) => prevKey + 1);
   };
 
   // Función para manejar cambios en las fechas
@@ -162,7 +164,7 @@ export const BookingFilter = () => {
           </form>
         </div>
       )}
-      {formSubmitted && <VehiclesFiltered formData={formData} />}
+      {formSubmitted && <VehiclesFiltered key={searchKey} formData={formData} />} 
     </div>
   );
 };

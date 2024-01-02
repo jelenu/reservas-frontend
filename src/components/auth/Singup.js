@@ -1,12 +1,10 @@
 import React, { useState, useContext } from 'react';
 import './authStyle.css';
 import { UserContext } from '../../context/userContext'
-import { useNavigate } from 'react-router-dom';
+import { IoMdClose } from "react-icons/io";
 
 
-function Signup() {
-  const navigate = useNavigate();
-
+function Signup({ onSignupComplete }) {
   const { setIsAutenticated } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
@@ -51,8 +49,7 @@ function Signup() {
 
       localStorage.setItem('authtoken', dataLogin.key);
       setIsAutenticated(true);
-
-      navigate('/');
+      onSignupComplete();
 
 
     } catch (error) {
@@ -61,36 +58,40 @@ function Signup() {
   };
 
   return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit}>
-        <h3>Sign Up</h3>
+    <div className="overlay">
+      <div className="form-container">
+        <button className='close-sign' onClick={onSignupComplete}><IoMdClose/></button>
 
-        <div className="mb-3">
-          <label>Username</label>
-          <input type="text" className="form-control" placeholder="Enter username" name="username" value={formData.username} onChange={handleChange}/>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <h3>Sign Up</h3>
 
-        <div className="mb-3">
-          <label>Email address</label>
-          <input type="email" className="form-control" placeholder="Enter email" name="email" value={formData.email} onChange={handleChange}/>
-        </div>
+          <div className="mb-3">
+            <label>Username</label>
+            <input type="text" className="form-control" placeholder="Enter username" name="username" value={formData.username} onChange={handleChange}/>
+          </div>
 
-        <div className="mb-3">
-          <label>Password</label>
-          <input type="password" className="form-control" placeholder="Enter password" name="password1" value={formData.password1} onChange={handleChange}/>
-        </div>
+          <div className="mb-3">
+            <label>Email address</label>
+            <input type="email" className="form-control" placeholder="Enter email" name="email" value={formData.email} onChange={handleChange}/>
+          </div>
 
-        <div className="mb-3">
-          <label>Confirm Password</label>
-          <input type="password" className="form-control" placeholder="Confirm password" name="password2" value={formData.password2} onChange={handleChange}/>
-        </div>
+          <div className="mb-3">
+            <label>Password</label>
+            <input type="password" className="form-control" placeholder="Enter password" name="password1" value={formData.password1} onChange={handleChange}/>
+          </div>
 
-        <div className="d-grid">
-          <button type="submit" className="btn btn-primary">
-            Sign Up
-          </button>
-        </div>
-      </form>
+          <div className="mb-3">
+            <label>Confirm Password</label>
+            <input type="password" className="form-control" placeholder="Confirm password" name="password2" value={formData.password2} onChange={handleChange}/>
+          </div>
+
+          <div className="d-grid">
+            <button type="submit" className="btn btn-primary">
+              Sign Up
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,13 +1,10 @@
-import React, { useState, useContext } from 'react'
-import './authStyle.css'
-import { UserContext } from '../../context/userContext'
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import './authStyle.css';
+import { UserContext } from '../../context/userContext';
+import { IoMdClose } from "react-icons/io";
 
 
-
-function Login() {
-  
-  const navigate = useNavigate();
+function Login({ onLoginComplete }) {
   const { setIsAutenticated } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
@@ -18,7 +15,6 @@ function Login() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,9 +29,7 @@ function Login() {
       const data = await response.json();
       localStorage.setItem('authtoken', data.key);
       setIsAutenticated(true);
-
-      navigate('/');
-
+      onLoginComplete();
 
     } catch (error) {
       console.error('Error al llamar a la API:', error);
@@ -43,30 +37,31 @@ function Login() {
   };
 
   return (
-    <div className="form-container">
+    <div className="overlay">
+      <div className="form-container">
+      <button className='close-sign' onClick={onLoginComplete}><IoMdClose/></button>
+        <form onSubmit={handleSubmit}>
+          <h3>Login</h3>
 
-      <form onSubmit={handleSubmit}>
-        <h3>Login</h3>
+          <div className="mb-3">
+            <label>Username</label>
+            <input type="text" className="form-control" placeholder="Enter Username" name="username" value={formData.username} onChange={handleChange} />
+          </div>
 
-        <div className="mb-3">
-          <label>Username</label>
-          <input type="text" className="form-control" placeholder="Enter Username" name="username" value={formData.username} onChange={handleChange} />
-        </div>
+          <div className="mb-3">
+            <label>Password</label>
+            <input type="password" className="form-control" placeholder="Enter password" name="password" value={formData.password} onChange={handleChange} />
+          </div>
 
-        <div className="mb-3">
-          <label>Password</label>
-          <input type="password" className="form-control" placeholder="Enter password" name="password" value={formData.password} onChange={handleChange} />
-        </div>
-
-        <div className="d-grid">
-          <button type="submit" className="btn btn-primary">
-            Submit
-          </button>
-        </div>
-      </form>
+          <div className="d-grid">
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  )
+  );
 }
 
-  export default Login
-
+export default Login;
